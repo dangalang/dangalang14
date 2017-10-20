@@ -1,0 +1,360 @@
+# vim: filetype=i3
+
+#Author: Forrest Lang
+# Please see https://i3wm.org/docs/userguide.html for a complete reference!
+
+
+
+###---Basic Definitions---###
+# Needed for i3-gaps
+hide_edge_borders both
+for_window [class="^.*"] border pixel 1
+gaps inner 10
+gaps outer 10
+font pango:mono 8
+set $mod Mod4
+set $term urxvt
+set $BROWSER qutebrowser
+set $EDITOR vim
+
+
+
+###---Starting External Scripts---###
+# Update screen resolution
+exec_always	xrandr --newmode "default" 173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync
+exec_always	xrandr --addmode Virtual1 default
+exec_alwyas	xrandr --output Virtual1 --mode default
+# Add wallpaper
+#exec_always	--no-startup-id feh --bg-scale ~/.config/wall.png
+# run wal on wall.png
+exec_always	--no-startup-id wal -c -i ~/.config/wall.png
+# Enable unclutter to hide mouse after inactivity
+exec		--no-startup-id unclutter
+# Composite manager:
+exec		--no-startup-id compton -b
+# Startup mpd
+exec		--no-startup-id mpd
+# Launch Polybar
+exec_always	--no-startup-id ~/.config/polybar/launch.sh
+
+
+###---Audio and Music Definitions---###
+
+# For moc
+set $music 	ncmpcpp
+set $pause 	--no-startup-id mocp -G
+set $truepause 	--no-startup-id mocp -P
+set $next 	--no-startup-id mocp -f
+set $prev 	--no-startup-id mocp -r
+set $lilfor 	--no-startup-id mocp -k 10
+set $bigfor 	--no-startup-id mocp -k 120
+set $lilbak 	--no-startup-id mocp -k -10
+set $bigbak 	--no-startup-id mocp -k -120
+set $beg 	--no-startup-id mocp -j 0%
+
+
+
+###---Dropdown/Scratchpad Windows---###
+exec		--no-startup-id $term -name dropdown -e tmux
+for_window	[instance="dropdown"] floating enable
+for_window	[instance="dropdown"] resize set 625 400
+for_window	[instance="dropdown"] move position center
+for_window	[instance="dropdown"] move scratchpad
+
+exec		--no-startup-id $term -fn "xft:mono:pixelsize=24" -name math -e R -q
+for_window	[instance="math"] floating enable
+for_window	[instance="math"] resize set 800 300
+for_window	[instance="math"] move position center
+for_window	[instance="math"] move scratchpad
+
+
+
+###---Basic Bindings---###
+bindsym $mod+Return		exec $term
+#bindsym $mod+Shift+Return
+
+bindsym $mod+space		focus mode_toggle
+bindsym $mod+Shift+space	floating toggle
+
+bindsym $mod+Escape		workspace prev
+bindsym $mod+Shift+Escape	exec i3-msg exit
+
+#bindsym $mod+Backspace
+bindsym $mod+Shift+Backspace	exec sudo reboot
+
+
+
+###---Letter Key Bindings---###
+bindsym $mod+q			kill
+bindsym $mod+Shift+q		kill
+
+bindsym $mod+w			layout tabbed
+bindsym $mod+Shift+w		exec --no-startup-id $BROWSER
+
+bindsym $mod+e			layout toggle split
+#bindsym $mod+Shift+e
+
+bindsym $mod+r			exec $term -e ranger
+bindsym $mod+Shift+r		restart
+
+bindsym $mod+t			split toggle
+bindsym $mod+Shift+t		gaps inner current set 15; gaps outer current set 5
+
+#bindsym $mod+y
+#bindsym $mod+Shift+y		
+
+bindsym $mod+u			[instance="dropdown"] scratchpad show; move position center
+#bindsym $mod+Shift+u		
+
+#bindsym $mod+i			exec $term -e htop
+#bindsym $mod+Shift+i		
+
+#bindsym $mod+o			exec --no-startup-id $beg
+#bindsym $mod+Shift+o		
+
+bindsym $mod+p			exec $pause
+#bindsym $mod+Shift+p		exec mypaint
+
+bindsym $mod+a			focus parent
+bindsym $mod+Shift+a		focus child
+
+bindsym $mod+s			layout stacking
+bindsym $mod+Shift+s		mode "resize"
+
+#bindsym $mod+d			exec rofi -show run
+bindsym $mod+d			exec dmenu_run -b -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
+bindsym $mod+Shift+d		gaps inner current set 0; gaps outer current set 0
+
+bindsym $mod+f			fullscreen toggle
+#bindsym $mod+Shift+f
+
+bindsym $mod+g			workspace prev
+bindsym $mod+Shift+g		exec --no-startup-id gimp; workspace $ws5
+
+bindsym $mod+h			focus left
+#bindsym $mod+Shift+h		
+
+bindsym $mod+j			focus down
+#bindsym $mod+Shift+j		
+
+bindsym $mod+k			focus up
+#bindsym $mod+Shift+k		
+
+bindsym $mod+l			focus right
+#bindsym $mod+Shift+l		
+
+#bindsym $mod+z			
+#bindsym $mod+Shift+z		
+
+bindsym $mod+x			exec --no-startup-id ~/.config/i3/lock.sh
+bindsym $mod+Shift+x		exec sudo shutdown -h now
+
+bindsym $mod+c			exec $term -e calcurse
+bindsym $mod+Shift+c		[instance="math"] scratchpad show; move position center
+
+#bindsym $mod+v			exec urxvt -e vis
+#bindsym $mod+Shift+v		exec projectM-pulseaudio
+
+#bindsym $mod+b			exec $prev
+#bindsym $mod+Shift+b		exec --no-startup-id blender; workspace $ws6
+
+#bindsym $mod+n			exec $term -e newsbeuter
+#bindsym $mod+Shift+n		exec $term -e newsbeuter
+
+bindsym $mod+m 			mode "move"
+bindsym $mod+Shift+m		exec $term -e ncmpcpp
+
+# Special Key Bindings
+bindsym $mod+bracketleft	gaps inner current minus 5
+bindsym $mod+Shift+bracketleft	gaps outer current minus 5
+
+bindsym $mod+bracketright	gaps inner current plus 5
+bindsym $mod+Shift+bracketright	gaps outer current plus 5
+
+bindsym $mod+apostrophe		split horizontal
+bindsym $mod+Shift+apostrophe	split horizontal ;; exec $term
+
+bindsym $mod+slash		split vertical
+bindsym $mod+Shift+slash	split vertical ;; exec $term
+
+###---Workspace Bindings---###
+bindsym $mod+Home		workspace $ws1
+bindsym $mod+Shift+Home		move container to workspace $ws1
+
+bindsym $mod+End		workspace $ws10
+bindsym $mod+Shift+End		move container to workspace $ws10
+
+bindsym $mod+Prior		workspace prev
+bindsym $mod+Shift+Prior	move container to workspace prev
+
+bindsym $mod+Next		workspace next
+bindsym $mod+Shift+Next		move container to workspace next
+
+bindsym $mod+Tab		workspace back_and_forth
+
+bindsym $mod+semicolon		workspace next
+
+bindsym $mod+backslash		workspace back_and_forth
+
+set $ws1 "1"
+set $ws2 "2"
+set $ws3 "3"
+set $ws4 "4"
+set $ws5 "5"
+set $ws6 "6"
+set $ws7 "7"
+set $ws8 "8"
+set $ws9 "9"
+set $ws10 "10"
+
+# switch to workspace
+bindsym $mod+1		workspace $ws1
+bindsym $mod+2		workspace $ws2
+bindsym $mod+3		workspace $ws3
+bindsym $mod+4		workspace $ws4
+bindsym $mod+5		workspace $ws5
+bindsym $mod+6		workspace $ws6
+bindsym $mod+7		workspace $ws7
+bindsym $mod+8		workspace $ws8
+bindsym $mod+9		workspace $ws9
+bindsym $mod+0		workspace $ws10
+
+# move to workspace
+bindsym $mod+Shift+1	move container to workspace $ws1
+bindsym $mod+Shift+2	move container to workspace $ws2
+bindsym $mod+Shift+3	move container to workspace $ws3
+bindsym $mod+Shift+4	move container to workspace $ws4
+bindsym $mod+Shift+5	move container to workspace $ws5
+bindsym $mod+Shift+6	move container to workspace $ws6
+bindsym $mod+Shift+7	move container to workspace $ws7
+bindsym $mod+Shift+8	move container to workspace $ws8
+bindsym $mod+Shift+9	move container to workspace $ws9
+bindsym $mod+Shift+0	move container to workspace $ws0
+
+# modes
+mode "move" {
+	bindsym h		move left 10
+	bindsym j		move down 10
+	bindsym k		move up 10
+	bindsym l		move right 10
+
+	bindsym Left		move left 10
+	bindsym Down		move down 10
+	bindsym Up		move up 10
+	bindsym Right		move right 10
+
+	bindsym Shift+h		move left 20
+	bindsym Shift+j		move down 20
+	bindsym Shift+k		move up 20
+	bindsym Shift+l		move right 20
+
+	bindsym Shift+Left	move left 20
+	bindsym Shift+Down	move down 20
+	bindsym Shift+Up	move up 20
+	bindsym Shift+Right	move right 20
+
+	bindsym Return		mode "default"
+	bindsym Escape		mode "default"
+	bindsym q		mode "default"
+}
+mode "resize" {
+	bindsym h		resize shrink width 10 px or 10 ppt
+	bindsym j		resize shrink height 10 px or 10 ppt
+	bindsym k		resize grow height 10 px or 10 ppt
+	bindsym l		resize grow width 10 px or 10 ppt
+
+	bindsym Left		resize shrink width 10 px or 10 ppt
+	bindsym Down		resize shrink height 10 px or 10 ppt
+	bindsym Up		resize grow height 10 px or 10 ppt
+	bindsym Right		resize grow width 10 px or 10 ppt
+
+	bindsym Shift+h		resize shrink width 20 px or 20 ppt
+	bindsym Shift+j		resize shrink height 20 px or 20 ppt
+	bindsym Shift+k		resize grow height 20 px or 20 ppt
+	bindsym Shift+l		resize grow width 20 px or 20 ppt
+
+	bindsym Shift+Left	resize shrink width 20 px or 20 ppt
+	bindsym Shift+Down	resize shrink height 20 px or 20 ppt
+	bindsym Shift+Up	resize grow height 20 px or 20 ppt
+	bindsym Shift+Right	resize grow width 20 px or 20 ppt
+
+	bindsym Return		mode "default"
+	bindsym Escape		mode "default"
+	bindsym q		mode "default"
+}
+
+###---Function Buttons---###
+#bindsym F1		nop
+#bindsym F2
+#bindsym F3
+#bindsym F4
+#bindsym F5
+#bindsym F6
+#bindsym F7
+#bindsym F8
+#bindsym F9
+#bindsym F10
+bindsym F11		fullscreen toggle
+#bindsym F12
+
+
+###---Arrow Keys---###
+bindsym $mod+Left		focus left
+bindsym $mod+Down		focus down
+bindsym $mod+Up			focus up
+bindsym $mod+Right 		focus right
+bindsym $mod+Shift+Left		move left
+bindsym $mod+Shift+Down		move down
+bindsym $mod+Shift+Up		move up
+bindsym $mod+Shift+Right 	move right
+
+
+
+###---Media Keys---###
+
+#Volume keys
+bindsym $mod+plus		exec $inc
+bindsym $mod+Shift+plus		exec $biginc
+bindsym $mod+minus 		exec $dec
+bindsym $mod+Shift+minus	exec $bigdec
+bindsym $mod+less 		exec $prev
+bindsym $mod+Shift+less		exec $beg
+bindsym $mod+greater		exec $next
+bindsym $mod+Shift+greater	exec $next
+
+#For advancing forward/backward in an mpd song
+#bindsym $mod+bracketleft 	exec $lilbak
+#bindsym $mod+Shift+bracketleft 	exec $bigbak
+#bindsym $mod+bracketright 	exec $lilfor
+#bindsym $mod+Shift+bracketright exec $bigfor
+
+#Print screen takes a screenshot.
+#With shift, it takes one only of the given window.
+bindsym Print			exec --no-startup-id scrot
+bindsym Shift+Print		exec --no-startup-id scrot -u
+
+# Use Mouse+$mod to drag floating windows to their wanted position
+floating_modifier $mod
+
+# Start i3bar to display a workspace bar (plus the system information i3status
+# finds out, if available)
+#bar {
+#        status_command i3status
+#}
+
+
+
+###---Color Settings---###
+# Set colors from Xresources
+set_from_resource $fg i3wm.color7 #f0f0f0
+set_from_resource $bg i3wm.color2 #f0f0f0
+set_from_resource $hl i3wm.color5 #f0f0f0
+
+#class			border	backgr	text	indicator	child_border
+client.focused		$hl	$bg	$fg	$hl		$bg
+client.focused_inactive	$hl	$bg	$fg	$hl		$bg
+client.unfocused	$hl	$bg	$fg	$hl		$bg
+client.urgent		$hl	$bg	$fg	$hl		$bg
+client.placeholder	$hl	$bg	$fg	$hl		$bg
+
+client.background	$bg
