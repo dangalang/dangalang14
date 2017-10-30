@@ -21,19 +21,21 @@ set $EDITOR vim
 
 ###---Starting External Scripts---###
 # Update screen resolution
-exec_always	xrandr --newmode "default" 173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync
-exec_always	xrandr --addmode Virtual1 default
-exec_alwyas	xrandr --output Virtual1 --mode default
-# Add wallpaper
-#exec_always	--no-startup-id feh --bg-scale ~/.config/wall.png
+#exec_always	xrandr --newmode "default" 173.00 1920 2048 2248 2576 1080 1083 1088 1120 -hsync +vsync
+#exec_always	xrandr --addmode Virtual1 default
+#exec_alwyas	xrandr --output Virtual1 --mode default
 # run wal on wall.png
 exec_always	--no-startup-id wal -c -i ~/.config/wall.png
+# Add wallpaper with feh
+exec_always	--no-startup-id feh --bg-scale ~/.config/wall.png
 # Enable unclutter to hide mouse after inactivity
 exec		--no-startup-id unclutter
 # Composite manager:
 exec		--no-startup-id compton -b
+# Blur background
+#exec		--no-startup-id ~/.config/scripts/blurme &
 # Startup mpd
-exec		--no-startup-id mpd
+#exec		--no-startup-id mpd
 # Launch Polybar
 exec_always	--no-startup-id ~/.config/polybar/launch.sh
 
@@ -60,6 +62,7 @@ for_window	[instance="dropdown"] floating enable
 for_window	[instance="dropdown"] resize set 625 400
 for_window	[instance="dropdown"] move position center
 for_window	[instance="dropdown"] move scratchpad
+for_window	[instance="dropdown"] sticky enable
 
 exec		--no-startup-id $term -fn "xft:mono:pixelsize=24" -name math -e R -q
 for_window	[instance="math"] floating enable
@@ -122,7 +125,7 @@ bindsym $mod+s			layout stacking
 bindsym $mod+Shift+s		mode "resize"
 
 #bindsym $mod+d			exec rofi -show run
-bindsym $mod+d			exec dmenu_run -b -nb "$fg" -nf "$bg" -sb "$bg" -sf "$fg"
+bindsym $mod+d			exec dmenu_run -b -nb "$bg" -nf "$hl" -sb "$bg" -sf "$fg"
 bindsym $mod+Shift+d		gaps inner current set 0; gaps outer current set 0
 
 bindsym $mod+f			fullscreen toggle
@@ -351,10 +354,10 @@ set_from_resource $bg i3wm.color2 #f0f0f0
 set_from_resource $hl i3wm.color5 #f0f0f0
 
 #class			border	backgr	text	indicator	child_border
-client.focused		$hl	$bg	$fg	$hl		$bg
-client.focused_inactive	$hl	$bg	$fg	$hl		$bg
-client.unfocused	$hl	$bg	$fg	$hl		$bg
-client.urgent		$hl	$bg	$fg	$hl		$bg
-client.placeholder	$hl	$bg	$fg	$hl		$bg
+client.focused		$fg	$bg	$fg	$hl		$hl
+client.focused_inactive	$bg	$bg	$fg	$hl		$bg
+client.unfocused	$bg	$bg	$fg	$hl		$bg
+client.urgent		$fg	$bg	$fg	$hl		$bg
+client.placeholder	$bg	$bg	$fg	$hl		$bg
 
-client.background	$bg
+ client.background	$bg

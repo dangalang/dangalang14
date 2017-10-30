@@ -118,3 +118,6 @@ fi
 
 # Import colorsheme from wal
 (wal -r &)
+
+# Add files to path
+export PATH=$PATH:~/.config/scripts

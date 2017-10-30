@@ -1,0 +1,13 @@
+#!/bin/bash
+
+FILE1="$@"
+
+newcontainer() {
+	i3-msg split vertical
+	i3-msg exec "$FILE1"
+	sleep 1
+	#i3-msg focus down
+	i3-msg floating enable
+}
+
+newcontainer 
